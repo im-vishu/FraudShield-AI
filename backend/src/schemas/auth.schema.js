@@ -1,1 +1,18 @@
-const Joi = require("joi");`n`nconst registerSchema = Joi.object({`n  name: Joi.string().trim().min(2).max(80).required(),`n  email: Joi.string().trim().lowercase().email().required(),`n  password: Joi.string().min(8).max(72).required(),`n  role: Joi.string().valid("ADMIN", "ANALYST", "USER").default("USER")`n});`n`nconst loginSchema = Joi.object({`n  email: Joi.string().trim().lowercase().email().required(),`n  password: Joi.string().required()`n});`n`nmodule.exports = { registerSchema, loginSchema };
+const Joi = require("joi");
+
+const registerSchema = Joi.object({
+  name: Joi.string().trim().min(2).max(80).required(),
+  email: Joi.string().trim().lowercase().email().required(),
+  password: Joi.string().min(8).max(72).required(),
+  role: Joi.string().valid("ADMIN", "ANALYST", "USER").default("USER")
+});
+
+const loginSchema = Joi.object({
+  email: Joi.string().trim().lowercase().email().required(),
+  password: Joi.string().required()
+});
+
+module.exports = {
+  registerSchema,
+  loginSchema
+};
