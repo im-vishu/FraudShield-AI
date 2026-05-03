@@ -7,6 +7,7 @@ const rateLimit = require("express-rate-limit");
 
 const healthRoutes = require("./routes/health.routes");
 const authRoutes = require("./routes/auth.routes");
+const transactionRoutes = require("./routes/transaction.routes");
 
 const { notFoundHandler, errorHandler } = require("./middleware/error.middleware");
 
@@ -37,6 +38,7 @@ if (process.env.NODE_ENV !== "test") {
 
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
