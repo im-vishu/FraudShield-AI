@@ -1,1 +1,57 @@
-const { registerUser, loginUser } = require("../services/auth.service");`nconst { successResponse } = require("../utils/apiResponse");`nconst { registerSchema, loginSchema } = require("../schemas/auth.schema");`n`nconst register = async (req, res, next) => {`n  try {`n    const { value, error } = registerSchema.validate(req.body, { abortEarly: false, stripUnknown: true });`n    if (error) { const e = new Error(error.details.map(d => d.message).join(", ")); e.statusCode = 400; throw e; }`n    const result = await registerUser(value);`n    return successResponse(res, 201, "User registered successfully", result);`n  } catch (err) { next(err); }`n};`n`nconst login = async (req, res, next) => {`n  try {`n    const { value, error } = loginSchema.validate(req.body, { abortEarly: false, stripUnknown: true });`n    if (error) { const e = new Error(error.details.map(d => d.message).join(", ")); e.statusCode = 400; throw e; }`n    const result = await loginUser({ ...value, ipAddress: req.ip });`n    return successResponse(res, 200, "Login successful", result);`n  } catch (err) { next(err); }`n};`n`nmodule.exports = { register, login };
+const { registerUser, loginUser } = require("../services/auth.service");
+const { successResponse } = require("../utils/apiResponse");
+const { registerSchema, loginSchema } = require("../schemas/auth.schema");
+
+const register = async (req, res, next) => {
+  try {
+    const { value, error } = registerSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true
+    });
+
+    if (error) {
+      const validationError = new Error(
+        error.details.map((detail) => detail.message).join(", ")
+      );
+      validationError.statusCode = 400;
+      throw validationError;
+    }
+
+    const result = await registerUser(value);
+
+    return successResponse(res, 201, "User registered successfully", result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const login = async (req, res, next) => {
+  try {
+    const { value, error } = loginSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true
+    });
+
+    if (error) {
+      const validationError = new Error(
+        error.details.map((detail) => detail.message).join(", ")
+      );
+      validationError.statusCode = 400;
+      throw validationError;
+    }
+
+    const result = await loginUser({
+      ...value,
+      ipAddress: req.ip
+    });
+
+    return successResponse(res, 200, "Login successful", result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  register,
+  login
+};
