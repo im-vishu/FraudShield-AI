@@ -1,5 +1,6 @@
 const prisma = require("../config/db");
 const { analyzeFraudRisk } = require("../ml/fraudModel");
+const { getRiskContext } = require("./riskContext.service");
 
 const createFraudAlertIfNeeded = async ({ transaction, riskResult }) => {
   if (riskResult.riskScore < 70) return null;
@@ -21,14 +22,21 @@ const createFraudAlertIfNeeded = async ({ transaction, riskResult }) => {
         riskScore: riskResult.riskScore,
         riskLevel: riskResult.riskLevel,
         ruleSignals: riskResult.ruleSignals,
-        mlSignals: riskResult.mlSignals
+        behaviorSignals: riskResult.behaviorSignals,
+        mlSignals: riskResult.mlSignals,
+        explanation: riskResult.explanation
       }
     }
   });
 };
 
 const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
-  const riskResult = analyzeFraudRisk(payload);
+  const context = await getRiskContext({
+    userId,
+    payload
+  });
+
+  const riskResult = analyzeFraudRisk(payload, context);
 
   const transaction = await prisma.transaction.create({
     data: {
@@ -44,7 +52,12 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
       riskScore: riskResult.riskScore,
       riskLevel: riskResult.riskLevel,
       status: riskResult.status,
-      ruleSignals: riskResult.ruleSignals,
+      ruleSignals: {
+        rules: riskResult.ruleSignals,
+        behavior: riskResult.behaviorSignals,
+        explanation: riskResult.explanation,
+        context
+      },
       apiSignals: riskResult.apiSignals,
       mlSignals: riskResult.mlSignals
     }
@@ -65,14 +78,17 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
       metadata: {
         transactionRef: transaction.transactionRef,
         riskScore: transaction.riskScore,
-        status: transaction.status
+        riskLevel: transaction.riskLevel,
+        status: transaction.status,
+        explanation: riskResult.explanation
       }
     }
   });
 
   return {
     transaction,
-    fraudAlert
+    fraudAlert,
+    riskExplanation: riskResult.explanation
   };
 };
 
