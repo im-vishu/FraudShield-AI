@@ -8,7 +8,6 @@ requiredEnvVars.forEach((key) => {
   }
 });
 
-console.log("DATABASE_URL loaded:", process.env.DATABASE_URL);
 
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || "development",
