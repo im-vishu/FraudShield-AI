@@ -139,7 +139,6 @@ const calculateAdvancedMLRisk = (transaction, context = {}) => {
 
   const amount = Number(transaction.amount);
   const averageAmount = context.userAverageAmount30d || 5000;
-
   const ratio = amount / Math.max(averageAmount, 1);
 
   if (context.userTransactionCount30d >= 3 && ratio >= 10) {
@@ -189,11 +188,19 @@ const calculateAdvancedMLRisk = (transaction, context = {}) => {
   };
 };
 
-const buildRiskExplanation = ({ riskScore, riskLevel, ruleSignals, behaviorSignals, mlSignals }) => {
+const buildRiskExplanation = ({
+  riskScore,
+  riskLevel,
+  ruleSignals,
+  behaviorSignals,
+  mlSignals,
+  ipSignals
+}) => {
   const allSignals = [
     ...ruleSignals,
     ...behaviorSignals,
-    ...(mlSignals.signals || [])
+    ...(mlSignals.signals || []),
+    ...ipSignals
   ];
 
   if (allSignals.length === 0) {
@@ -213,13 +220,46 @@ const buildRiskExplanation = ({ riskScore, riskLevel, ruleSignals, behaviorSigna
   };
 };
 
+const buildIpSignals = (ipReputation) => {
+  if (!ipReputation) return [];
+
+  const signals = [];
+
+  if (ipReputation.abuseConfidence >= 75) {
+    signals.push({
+      signal: "HIGH_ABUSE_IP_CONFIDENCE",
+      points: ipReputation.riskScore || 0,
+      message: `IP has high AbuseIPDB confidence score: ${ipReputation.abuseConfidence}`
+    });
+  } else if (ipReputation.abuseConfidence >= 40) {
+    signals.push({
+      signal: "MEDIUM_ABUSE_IP_CONFIDENCE",
+      points: ipReputation.riskScore || 0,
+      message: `IP has moderate AbuseIPDB confidence score: ${ipReputation.abuseConfidence}`
+    });
+  }
+
+  if (ipReputation.isBlacklisted) {
+    signals.push({
+      signal: "BLACKLISTED_OR_RISKY_IP",
+      points: 20,
+      message: "IP is blacklisted, proxy, hosting, or risky"
+    });
+  }
+
+  return signals;
+};
+
 const analyzeFraudRisk = (transaction, context = {}) => {
   const ruleRisk = calculateRuleBasedRisk(transaction);
   const behaviorRisk = calculateBehaviorRisk(transaction, context);
   const mlRisk = calculateAdvancedMLRisk(transaction, context);
 
+  const ipRiskScore = context.ipReputation?.riskScore || 0;
+  const ipSignals = buildIpSignals(context.ipReputation);
+
   const riskScore = Math.min(
-    ruleRisk.score + behaviorRisk.score + mlRisk.score,
+    ruleRisk.score + behaviorRisk.score + mlRisk.score + ipRiskScore,
     100
   );
 
@@ -231,7 +271,8 @@ const analyzeFraudRisk = (transaction, context = {}) => {
     riskLevel,
     ruleSignals: ruleRisk.signals,
     behaviorSignals: behaviorRisk.signals,
-    mlSignals: mlRisk
+    mlSignals: mlRisk,
+    ipSignals
   });
 
   return {
@@ -240,11 +281,12 @@ const analyzeFraudRisk = (transaction, context = {}) => {
     status,
     ruleSignals: ruleRisk.signals,
     behaviorSignals: behaviorRisk.signals,
+    ipSignals,
     mlSignals: mlRisk,
     explanation,
-    apiSignals: {
+    apiSignals: context.ipReputation || {
       enabled: false,
-      message: "External IP intelligence will be added in Phase 6"
+      message: "No IP reputation data available"
     }
   };
 };
