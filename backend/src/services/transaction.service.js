@@ -2,6 +2,7 @@ const prisma = require("../config/db");
 const { analyzeFraudRisk } = require("../ml/fraudModel");
 const { getRiskContext } = require("./riskContext.service");
 const { checkIPReputation } = require("./ipReputation.service");
+const { publishFraudAlert } = require("./alertPublisher.service");
 
 const createFraudAlertIfNeeded = async ({ transaction, riskResult }) => {
   if (riskResult.riskScore < 70) return null;
@@ -76,6 +77,12 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
     riskResult
   });
 
+  const publishedAlert = await publishFraudAlert({
+    transaction,
+    fraudAlert,
+    riskResult
+  });
+
   await prisma.auditLog.create({
     data: {
       userId,
@@ -89,7 +96,8 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
         riskLevel: transaction.riskLevel,
         status: transaction.status,
         apiSignals: riskResult.apiSignals,
-        explanation: riskResult.explanation
+        explanation: riskResult.explanation,
+        publishedAlert
       }
     }
   });
@@ -97,6 +105,7 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
   return {
     transaction,
     fraudAlert,
+    publishedAlert,
     riskExplanation: riskResult.explanation
   };
 };
