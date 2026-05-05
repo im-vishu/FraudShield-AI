@@ -1,6 +1,7 @@
 const prisma = require("../config/db");
 const { analyzeFraudRisk } = require("../ml/fraudModel");
 const { getRiskContext } = require("./riskContext.service");
+const { checkIPReputation } = require("./ipReputation.service");
 
 const createFraudAlertIfNeeded = async ({ transaction, riskResult }) => {
   if (riskResult.riskScore < 70) return null;
@@ -23,7 +24,9 @@ const createFraudAlertIfNeeded = async ({ transaction, riskResult }) => {
         riskLevel: riskResult.riskLevel,
         ruleSignals: riskResult.ruleSignals,
         behaviorSignals: riskResult.behaviorSignals,
+        ipSignals: riskResult.ipSignals,
         mlSignals: riskResult.mlSignals,
+        apiSignals: riskResult.apiSignals,
         explanation: riskResult.explanation
       }
     }
@@ -35,6 +38,10 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
     userId,
     payload
   });
+
+  if (payload.ipAddress) {
+    context.ipReputation = await checkIPReputation(payload.ipAddress);
+  }
 
   const riskResult = analyzeFraudRisk(payload, context);
 
@@ -55,6 +62,7 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
       ruleSignals: {
         rules: riskResult.ruleSignals,
         behavior: riskResult.behaviorSignals,
+        ipSignals: riskResult.ipSignals,
         explanation: riskResult.explanation,
         context
       },
@@ -80,6 +88,7 @@ const analyzeAndStoreTransaction = async ({ userId, payload, ipAddress }) => {
         riskScore: transaction.riskScore,
         riskLevel: transaction.riskLevel,
         status: transaction.status,
+        apiSignals: riskResult.apiSignals,
         explanation: riskResult.explanation
       }
     }
