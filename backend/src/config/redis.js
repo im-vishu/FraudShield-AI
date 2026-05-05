@@ -2,22 +2,43 @@ const redis = require("redis");
 const env = require("./env");
 
 let redisClient;
+let redisPublisher;
+let redisSubscriber;
 
-const connectRedis = async () => {
-  redisClient = redis.createClient({
+const createRedisClient = () => {
+  return redis.createClient({
     url: env.REDIS_URL
   });
+};
+
+const connectRedis = async () => {
+  redisClient = createRedisClient();
+  redisPublisher = createRedisClient();
+  redisSubscriber = createRedisClient();
 
   redisClient.on("error", (error) => {
-    console.error("❌ Redis error:", error.message);
+    console.error("❌ Redis client error:", error.message);
   });
 
-  redisClient.on("connect", () => {
-    console.log("✅ Redis connected");
+  redisPublisher.on("error", (error) => {
+    console.error("❌ Redis publisher error:", error.message);
+  });
+
+  redisSubscriber.on("error", (error) => {
+    console.error("❌ Redis subscriber error:", error.message);
   });
 
   await redisClient.connect();
-  return redisClient;
+  await redisPublisher.connect();
+  await redisSubscriber.connect();
+
+  console.log("✅ Redis connected");
+
+  return {
+    redisClient,
+    redisPublisher,
+    redisSubscriber
+  };
 };
 
 const getRedisClient = () => {
@@ -28,7 +49,25 @@ const getRedisClient = () => {
   return redisClient;
 };
 
+const getRedisPublisher = () => {
+  if (!redisPublisher) {
+    throw new Error("Redis publisher is not initialized");
+  }
+
+  return redisPublisher;
+};
+
+const getRedisSubscriber = () => {
+  if (!redisSubscriber) {
+    throw new Error("Redis subscriber is not initialized");
+  }
+
+  return redisSubscriber;
+};
+
 module.exports = {
   connectRedis,
-  getRedisClient
+  getRedisClient,
+  getRedisPublisher,
+  getRedisSubscriber
 };
