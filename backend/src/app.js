@@ -9,6 +9,7 @@ const healthRoutes = require("./routes/health.routes");
 const authRoutes = require("./routes/auth.routes");
 const transactionRoutes = require("./routes/transaction.routes");
 const ipRoutes = require("./routes/ip.routes");
+const alertRoutes = require("./routes/alert.routes");
 
 const { notFoundHandler, errorHandler } = require("./middleware/error.middleware");
 
@@ -41,6 +42,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/ip", ipRoutes);
+app.use("/api/alerts", alertRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
