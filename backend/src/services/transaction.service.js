@@ -128,7 +128,15 @@ const listTransactions = async ({ user, limit = 20, page = 1 }) => {
       take,
       skip,
       include: {
-        fraudAlerts: true
+        fraudAlerts: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true
+          }
+        }
       }
     }),
     prisma.transaction.count({ where })
@@ -145,7 +153,30 @@ const listTransactions = async ({ user, limit = 20, page = 1 }) => {
   };
 };
 
+const getTransactionById = async ({ user, id }) => {
+  const tx = await prisma.transaction.findUnique({
+    where: { id },
+    include: { fraudAlerts: true, user: true }
+  });
+
+  if (!tx) {
+    const error = new Error("Transaction not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const isAdmin = user.role === "ADMIN" || user.role === "ANALYST";
+  if (!isAdmin && tx.userId !== user.id) {
+    const error = new Error("Access denied");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  return tx;
+};
+
 module.exports = {
   analyzeAndStoreTransaction,
-  listTransactions
+  listTransactions,
+  getTransactionById
 };
