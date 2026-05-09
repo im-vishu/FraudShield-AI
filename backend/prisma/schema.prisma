@@ -27,6 +27,13 @@ enum AlertSeverity {
   CRITICAL
 }
 
+enum FraudAlertStatus {
+  NEW
+  INVESTIGATING
+  DISMISSED
+  RESOLVED
+}
+
 enum AuditAction {
   USER_REGISTERED
   USER_LOGIN
@@ -46,6 +53,7 @@ model User {
 
   transactions Transaction[]
   auditLogs    AuditLog[]
+  fraudAlertStatusUpdates FraudAlert[] @relation("FraudAlertStatusUpdatedBy")
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -101,10 +109,16 @@ model FraudAlert {
   message       String
   metadata      Json?
 
+  status        FraudAlertStatus @default(NEW)
+  statusUpdatedAt DateTime       @default(now())
+  statusUpdatedByUserId String?
+  dismissReason String?
+
   isResolved    Boolean       @default(false)
   resolvedAt    DateTime?
 
   transaction   Transaction   @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  statusUpdatedByUser User?   @relation("FraudAlertStatusUpdatedBy", fields: [statusUpdatedByUserId], references: [id], onDelete: SetNull)
 
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -112,6 +126,7 @@ model FraudAlert {
   @@index([transactionId])
   @@index([severity])
   @@index([isResolved])
+  @@index([status])
   @@map("fraud_alerts")
 }
 
