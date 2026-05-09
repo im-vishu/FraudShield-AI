@@ -1,0 +1,160 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Sovereign Sentinel design tokens (stitch) */
+  --color-secondary-fixed-dim: #b7c8e1;
+  --color-surface: #f7f9fb;
+  --color-primary-fixed-dim: #bec6e0;
+  --color-tertiary-fixed-dim: #dec29a;
+  --color-on-surface-variant: #45464d;
+  --color-surface-container: #eceef0;
+  --color-primary-container: #131b2e;
+  --color-on-surface: #191c1e;
+  --color-on-error-container: #93000a;
+  --color-surface-tint: #565e74;
+  --color-surface-bright: #f7f9fb;
+  --color-outline: #76777d;
+  --color-secondary-fixed: #d3e4fe;
+  --color-surface-dim: #d8dadc;
+  --color-surface-container-high: #e6e8ea;
+  --color-on-secondary-fixed-variant: #38485d;
+  --color-surface-container-low: #f2f4f6;
+  --color-on-primary-container: #7c839b;
+  --color-on-tertiary-container: #98805d;
+  --color-on-secondary-container: #54647a;
+  --color-tertiary: #000000;
+  --color-on-tertiary-fixed-variant: #574425;
+  --color-on-primary-fixed: #131b2e;
+  --color-inverse-on-surface: #eff1f3;
+  --color-on-primary-fixed-variant: #3f465c;
+  --color-on-background: #191c1e;
+  --color-error: #ba1a1a;
+  --color-on-secondary: #ffffff;
+  --color-surface-container-highest: #e0e3e5;
+  --color-on-tertiary-fixed: #271901;
+  --color-outline-variant: #c6c6cd;
+  --color-tertiary-fixed: #fcdeb5;
+  --color-on-tertiary: #ffffff;
+  --color-on-secondary-fixed: #0b1c30;
+  --color-secondary-container: #d0e1fb;
+  --color-inverse-primary: #bec6e0;
+  --color-primary-fixed: #dae2fd;
+  --color-on-primary: #ffffff;
+  --color-inverse-surface: #2d3133;
+  --color-on-error: #ffffff;
+  --color-tertiary-container: #271901;
+  --color-surface-variant: #e0e3e5;
+  --color-surface-container-lowest: #ffffff;
+  --color-error-container: #ffdad6;
+
+  --font-headline: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+  --font-display: "Manrope", sans-serif;
+  --font-manrope: "Manrope", sans-serif;
+}
+
+/* Sovereign Sentinel light theme — semantic shadcn vars mapped to stitch */
+:root {
+  --radius: 0.5rem;
+  --background: #f7f9fb;
+  --foreground: #191c1e;
+  --card: #ffffff;
+  --card-foreground: #191c1e;
+  --popover: #ffffff;
+  --popover-foreground: #191c1e;
+  --primary: #131b2e;
+  --primary-foreground: #ffffff;
+  --secondary: #eceef0;
+  --secondary-foreground: #191c1e;
+  --muted: #f2f4f6;
+  --muted-foreground: #45464d;
+  --accent: #e6e8ea;
+  --accent-foreground: #191c1e;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --success: #2f8f5d;
+  --success-foreground: #ffffff;
+  --warning: #b58a2e;
+  --warning-foreground: #ffffff;
+  --border: rgba(198, 198, 205, 0.2);
+  --input: rgba(198, 198, 205, 0.3);
+  --ring: rgba(63, 70, 92, 0.4);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, h5 { font-family: var(--font-headline); }
+}
+
+@layer utilities {
+  .signature-gradient {
+    background: linear-gradient(135deg, #000000 0%, #131b2e 100%);
+  }
+  .glass-panel {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.7);
+  }
+  .security-pattern {
+    background-image: radial-gradient(#c6c6cd 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    opacity: 0.2;
+  }
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
+}
+
+/* Fonts are loaded via <link> tags in __root.tsx to avoid @import ordering issues. */
