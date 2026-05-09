@@ -11,6 +11,8 @@ const transactionRoutes = require("./routes/transaction.routes");
 const ipRoutes = require("./routes/ip.routes");
 const alertRoutes = require("./routes/alert.routes");
 const adminRoutes = require("./routes/admin.routes");
+const reportRoutes = require("./routes/report.routes");
+const indexRoutes = require("./routes/index.routes");
 
 const { notFoundHandler, errorHandler } = require("./middleware/error.middleware");
 
@@ -40,10 +42,12 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 app.use("/api/health", healthRoutes);
+app.use("/api", indexRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/ip", ipRoutes);
 app.use("/api/alerts", alertRoutes);
+app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFoundHandler);
