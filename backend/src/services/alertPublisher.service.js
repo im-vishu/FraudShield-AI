@@ -20,6 +20,7 @@ const publishFraudAlert = async ({ transaction, fraudAlert, riskResult }) => {
     transactionId: transaction.id,
     transactionRef: transaction.transactionRef,
     severity: fraudAlert.severity,
+    alertStatus: fraudAlert.status || "NEW",
     title: fraudAlert.title,
     message: fraudAlert.message,
     riskScore: riskResult.riskScore,
