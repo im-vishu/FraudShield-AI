@@ -36,12 +36,17 @@ function LoginPage() {
       <aside className="hidden lg:flex w-1/2 relative overflow-hidden signature-gradient text-white p-12 flex-col justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span
+              className="material-symbols-outlined"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
               security
             </span>
           </div>
           <div>
-            <p className="font-headline font-extrabold text-lg tracking-tight">Sovereign Sentinel</p>
+            <p className="font-headline font-extrabold text-lg tracking-tight">
+              Sovereign Sentinel
+            </p>
             <p className="text-[10px] uppercase tracking-widest opacity-70">Fraud Prevention AI</p>
           </div>
         </div>
@@ -50,10 +55,13 @@ function LoginPage() {
             India's UPI fraud sentinel, built for Tier 1-4 reach.
           </h2>
           <p className="text-white/80 text-sm leading-relaxed">
-            Live heatmaps, transaction tracing, and persistent alert workflows across your payment rails.
+            Live heatmaps, transaction tracing, and persistent alert workflows across your payment
+            rails.
           </p>
         </div>
-        <p className="text-[10px] uppercase tracking-widest opacity-60">© 2024 Sovereign Sentinel</p>
+        <p className="text-[10px] uppercase tracking-widest opacity-60">
+          © 2024 Sovereign Sentinel
+        </p>
         <div className="absolute -right-32 -top-32 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-white/5 blur-3xl" />
       </aside>
@@ -62,30 +70,34 @@ function LoginPage() {
       <main className="flex-1 flex items-center justify-center p-8 relative">
         <Link
           to="/"
-          className="absolute top-6 left-6 text-xs font-bold text-on-surface-variant hover:text-primary inline-flex items-center gap-1"
+          title="Home"
+          aria-label="Home"
+          className="absolute top-6 left-6 h-10 w-10 rounded-xl bg-white/70 backdrop-blur-xl border border-outline-variant/20 shadow-sm hover:shadow-md transition-shadow flex items-center justify-center text-on-surface-variant hover:text-primary"
         >
-          <span className="material-symbols-outlined text-base">arrow_back</span> Back to home
+          <span className="material-symbols-outlined text-base">arrow_back</span>
         </Link>
 
         <div className="w-full max-w-md">
           <div className="bg-surface-container-lowest p-10 rounded-2xl shadow-[0px_20px_40px_rgba(25,28,30,0.04)] border border-outline-variant/15">
             <div className="mb-8">
               <h2 className="font-headline font-bold text-2xl tracking-tight">Sign in</h2>
-              <p className="text-on-surface-variant text-sm mt-1">Use your corporate email and access key.</p>
+              <p className="text-on-surface-variant text-sm mt-1">
+                Use your email and password.
+              </p>
             </div>
 
             <form className="space-y-5" onSubmit={onSubmit}>
-              <Field label="Corporate Email" icon="alternate_email">
+              <Field label="Email" icon="alternate_email">
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
                   required
-                  placeholder="name@organization.com"
+                  placeholder="name@example.com"
                   className={inputCls}
                 />
               </Field>
-              <Field label="Access Key" icon="lock">
+              <Field label="Password" icon="lock">
                 <input
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -149,4 +161,3 @@ function Field({
     </div>
   );
 }
-
