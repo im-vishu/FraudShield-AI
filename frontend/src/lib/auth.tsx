@@ -38,7 +38,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setToken(parsed.token);
         }
       }
-    } catch {}
+    } catch {
+      // Ignore invalid/corrupt localStorage payloads.
+    }
     setLoading(false);
   }, []);
 
@@ -72,7 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
   };
 
-  const value = useMemo(() => ({ user, token, loading, login, register, logout }), [user, token, loading]);
+  const value = useMemo(
+    () => ({ user, token, loading, login, register, logout }),
+    [user, token, loading],
+  );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
