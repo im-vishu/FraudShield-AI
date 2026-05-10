@@ -28,8 +28,8 @@ export default defineConfig(({ command }) => ({
   },
   server: {
     host: "::",
-    port: 8080,
-    strictPort: true,
+    port: 3000,
+    strictPort: false,
   },
   envPrefix: ["VITE_"],
 }));
