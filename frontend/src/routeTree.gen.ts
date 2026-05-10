@@ -17,6 +17,9 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardTransactionsRouteImport } from './routes/dashboard.transactions'
 import { Route as DashboardRiskAnalysisRouteImport } from './routes/dashboard.risk-analysis'
 import { Route as DashboardReportsRouteImport } from './routes/dashboard.reports'
+import { Route as DashboardLogsRouteImport } from './routes/dashboard.logs'
+import { Route as DashboardIpReputationRouteImport } from './routes/dashboard.ip-reputation'
+import { Route as DashboardAnalyzeRouteImport } from './routes/dashboard.analyze'
 import { Route as DashboardAlertsRouteImport } from './routes/dashboard.alerts'
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as DashboardAdminIndexRouteImport } from './routes/dashboard.admin.index'
@@ -63,6 +66,21 @@ const DashboardReportsRoute = DashboardReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardLogsRoute = DashboardLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardIpReputationRoute = DashboardIpReputationRouteImport.update({
+  id: '/ip-reputation',
+  path: '/ip-reputation',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnalyzeRoute = DashboardAnalyzeRouteImport.update({
+  id: '/analyze',
+  path: '/analyze',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAlertsRoute = DashboardAlertsRouteImport.update({
   id: '/alerts',
   path: '/alerts',
@@ -96,6 +114,9 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/dashboard/admin': typeof DashboardAdminRouteWithChildren
   '/dashboard/alerts': typeof DashboardAlertsRoute
+  '/dashboard/analyze': typeof DashboardAnalyzeRoute
+  '/dashboard/ip-reputation': typeof DashboardIpReputationRoute
+  '/dashboard/logs': typeof DashboardLogsRoute
   '/dashboard/reports': typeof DashboardReportsRouteWithChildren
   '/dashboard/risk-analysis': typeof DashboardRiskAnalysisRoute
   '/dashboard/transactions': typeof DashboardTransactionsRouteWithChildren
@@ -109,6 +130,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/dashboard/alerts': typeof DashboardAlertsRoute
+  '/dashboard/analyze': typeof DashboardAnalyzeRoute
+  '/dashboard/ip-reputation': typeof DashboardIpReputationRoute
+  '/dashboard/logs': typeof DashboardLogsRoute
   '/dashboard/reports': typeof DashboardReportsRouteWithChildren
   '/dashboard/risk-analysis': typeof DashboardRiskAnalysisRoute
   '/dashboard/transactions': typeof DashboardTransactionsRouteWithChildren
@@ -125,6 +149,9 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/dashboard/admin': typeof DashboardAdminRouteWithChildren
   '/dashboard/alerts': typeof DashboardAlertsRoute
+  '/dashboard/analyze': typeof DashboardAnalyzeRoute
+  '/dashboard/ip-reputation': typeof DashboardIpReputationRoute
+  '/dashboard/logs': typeof DashboardLogsRoute
   '/dashboard/reports': typeof DashboardReportsRouteWithChildren
   '/dashboard/risk-analysis': typeof DashboardRiskAnalysisRoute
   '/dashboard/transactions': typeof DashboardTransactionsRouteWithChildren
@@ -142,6 +169,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard/admin'
     | '/dashboard/alerts'
+    | '/dashboard/analyze'
+    | '/dashboard/ip-reputation'
+    | '/dashboard/logs'
     | '/dashboard/reports'
     | '/dashboard/risk-analysis'
     | '/dashboard/transactions'
@@ -155,6 +185,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/dashboard/alerts'
+    | '/dashboard/analyze'
+    | '/dashboard/ip-reputation'
+    | '/dashboard/logs'
     | '/dashboard/reports'
     | '/dashboard/risk-analysis'
     | '/dashboard/transactions'
@@ -170,6 +203,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard/admin'
     | '/dashboard/alerts'
+    | '/dashboard/analyze'
+    | '/dashboard/ip-reputation'
+    | '/dashboard/logs'
     | '/dashboard/reports'
     | '/dashboard/risk-analysis'
     | '/dashboard/transactions'
@@ -242,6 +278,27 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/dashboard/reports'
       preLoaderRoute: typeof DashboardReportsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/logs': {
+      id: '/dashboard/logs'
+      path: '/logs'
+      fullPath: '/dashboard/logs'
+      preLoaderRoute: typeof DashboardLogsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/ip-reputation': {
+      id: '/dashboard/ip-reputation'
+      path: '/ip-reputation'
+      fullPath: '/dashboard/ip-reputation'
+      preLoaderRoute: typeof DashboardIpReputationRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/analyze': {
+      id: '/dashboard/analyze'
+      path: '/analyze'
+      fullPath: '/dashboard/analyze'
+      preLoaderRoute: typeof DashboardAnalyzeRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/alerts': {
@@ -321,6 +378,9 @@ const DashboardTransactionsRouteWithChildren =
 interface DashboardRouteChildren {
   DashboardAdminRoute: typeof DashboardAdminRouteWithChildren
   DashboardAlertsRoute: typeof DashboardAlertsRoute
+  DashboardAnalyzeRoute: typeof DashboardAnalyzeRoute
+  DashboardIpReputationRoute: typeof DashboardIpReputationRoute
+  DashboardLogsRoute: typeof DashboardLogsRoute
   DashboardReportsRoute: typeof DashboardReportsRouteWithChildren
   DashboardRiskAnalysisRoute: typeof DashboardRiskAnalysisRoute
   DashboardTransactionsRoute: typeof DashboardTransactionsRouteWithChildren
@@ -330,6 +390,9 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAdminRoute: DashboardAdminRouteWithChildren,
   DashboardAlertsRoute: DashboardAlertsRoute,
+  DashboardAnalyzeRoute: DashboardAnalyzeRoute,
+  DashboardIpReputationRoute: DashboardIpReputationRoute,
+  DashboardLogsRoute: DashboardLogsRoute,
   DashboardReportsRoute: DashboardReportsRouteWithChildren,
   DashboardRiskAnalysisRoute: DashboardRiskAnalysisRoute,
   DashboardTransactionsRoute: DashboardTransactionsRouteWithChildren,
