@@ -1,0 +1,18 @@
+{
+  "name": "fraudshield-ai-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "FraudShield AI - India Fraud Watch (frontend + backend + ml)",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "npm run dev:backend && npm run dev:frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "lint": "npm run lint --prefix frontend",
+    "seed:users": "npm run seed:users --prefix backend",
+    "prisma:migrate": "npm run prisma:migrate --prefix backend",
+    "prisma:deploy": "npm run prisma:deploy --prefix backend"
+  }
+}
+
