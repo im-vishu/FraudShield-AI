@@ -7,7 +7,7 @@ function NodeGraph({ count = 36 }: { count?: number }) {
   const group = useRef<THREE.Group>(null);
   const points = useMemo(() => {
     const pts: THREE.Vector3[] = [];
-    const rand = (n: number) => (Math.sin(n * 999.1) * 0.5 + 0.5);
+    const rand = (n: number) => Math.sin(n * 999.1) * 0.5 + 0.5;
     for (let i = 0; i < count; i++) {
       const x = (rand(i + 1) - 0.5) * 3.2;
       const y = (rand(i + 2) - 0.5) * 2.0;
@@ -72,4 +72,3 @@ export function LandingHeroCanvas({ reducedMotion }: { reducedMotion?: boolean }
     </Canvas>
   );
 }
-
