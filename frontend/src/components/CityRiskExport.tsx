@@ -4,7 +4,7 @@ import { downloadCsv } from "@/lib/csv";
 import { bandFor, scoreCity, type RiskBand } from "@/lib/risk";
 
 const RANGES = [
-  { id: "7d",  label: "Last 7 Days",  days: 7 },
+  { id: "7d", label: "Last 7 Days", days: 7 },
   { id: "30d", label: "Last 30 Days", days: 30 },
   { id: "90d", label: "Last 90 Days", days: 90 },
   { id: "ytd", label: "Year to Date", days: 300 },
@@ -36,8 +36,10 @@ export function CityRiskExport() {
 
     const rows: (string | number)[][] = [
       ["FraudShieldAI City-Wise Risk Report"],
-      [`Range: ${fmt(start)} → ${fmt(today)}`, `Generated: ${today.toISOString()}`],
-      [`Filters — City: ${city === "all" ? "All" : city} · Risk: ${bandFilter === "all" ? "All" : bandFilter}`],
+      [`Range: ${fmt(start)} -> ${fmt(today)}`, `Generated: ${today.toISOString()}`],
+      [
+        `Filters - City: ${city === "all" ? "All" : city} | Risk: ${bandFilter === "all" ? "All" : bandFilter}`,
+      ],
       [],
       ["City", "Tier", "Lat", "Lng", "Txn Count (range)", "Base Risk %", "Risk Score", "Band"],
     ];
@@ -55,26 +57,51 @@ export function CityRiskExport() {
     }
 
     if (filtered.length === 0) {
-      rows.push(["— No cities match the selected filters —"]);
+      rows.push(["No cities match the selected filters."]);
     }
 
     downloadCsv(`fraudshield-city-risk-${range}-${bandFilter}-${fmt(today)}.csv`, rows);
-    setTimeout(() => { setBusy(false); setDone(true); setTimeout(() => setDone(false), 1800); }, 400);
+    setTimeout(() => {
+      setBusy(false);
+      setDone(true);
+      setTimeout(() => setDone(false), 1800);
+    }, 400);
   };
 
-  const selectCls = "bg-white rounded-lg px-3 py-1.5 text-xs font-semibold border-none shadow-sm cursor-pointer";
+  const selectCls =
+    "bg-white rounded-lg px-3 py-1.5 text-xs font-semibold border-none shadow-sm cursor-pointer";
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <select value={range} onChange={(e) => setRange(e.target.value as typeof range)} className={selectCls}>
-        {RANGES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+      <select
+        value={range}
+        onChange={(e) => setRange(e.target.value as typeof range)}
+        className={selectCls}
+      >
+        {RANGES.map((r) => (
+          <option key={r.id} value={r.id}>
+            {r.label}
+          </option>
+        ))}
       </select>
       <select value={city} onChange={(e) => setCity(e.target.value)} className={selectCls}>
         <option value="all">All Cities</option>
-        {CITIES.map((c) => <option key={c.name} value={c.name}>{c.name} (T{c.tier})</option>)}
+        {CITIES.map((c) => (
+          <option key={c.name} value={c.name}>
+            {c.name} (T{c.tier})
+          </option>
+        ))}
       </select>
-      <select value={bandFilter} onChange={(e) => setBandFilter(e.target.value as typeof bandFilter)} className={selectCls}>
-        {BANDS.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}
+      <select
+        value={bandFilter}
+        onChange={(e) => setBandFilter(e.target.value as typeof bandFilter)}
+        className={selectCls}
+      >
+        {BANDS.map((b) => (
+          <option key={b.id} value={b.id}>
+            {b.label}
+          </option>
+        ))}
       </select>
       <button
         onClick={handleExport}
@@ -82,7 +109,7 @@ export function CityRiskExport() {
         className="signature-gradient text-white px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow-lg active:scale-95 transition-transform disabled:opacity-60"
       >
         <span className="material-symbols-outlined text-sm">{done ? "check" : "download"}</span>
-        {busy ? "Exporting…" : done ? "Downloaded" : "Export City CSV"}
+        {busy ? "Exporting..." : done ? "Downloaded" : "Export City CSV"}
       </button>
     </div>
   );
