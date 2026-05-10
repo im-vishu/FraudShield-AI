@@ -23,6 +23,16 @@ export function TraceMap({ height = "420px", nodes, points, livePoint }: Props) 
   });
   const [draft, setDraft] = useState("");
 
+  // TanStack Start does SSR: the initial state may be computed on the server where
+  // `import.meta.env` isn't available. Re-hydrate the token on the client.
+  useEffect(() => {
+    if (token) return;
+    if (typeof window === "undefined") return;
+    const resolved =
+      (import.meta.env.VITE_MAPBOX_TOKEN as string) || localStorage.getItem(TOKEN_KEY) || "";
+    if (resolved) setToken(resolved);
+  }, [token]);
+
   const lineGeojson = useMemo(() => {
     const coords = points.map((p) => [p.lng, p.lat]);
     if (livePoint) coords.push([livePoint.lng, livePoint.lat]);
@@ -60,8 +70,8 @@ export function TraceMap({ height = "420px", nodes, points, livePoint }: Props) 
             new mapboxgl.Popup({ offset: 14, closeButton: false }).setHTML(
               `<div style="font-family:Inter;color:#0B0F1E;padding:4px 6px">
                  <div style="font-weight:700;font-size:12px">${n.city || n.label || "Node"}</div>
-               </div>`
-            )
+               </div>`,
+            ),
           )
           .addTo(map);
         markers.push(m);
@@ -80,7 +90,10 @@ export function TraceMap({ height = "420px", nodes, points, livePoint }: Props) 
       });
 
       // Fit bounds if we can
-      const all = [...nodes.map((n) => [n.lng, n.lat] as [number, number]), ...points.map((p) => [p.lng, p.lat] as [number, number])];
+      const all = [
+        ...nodes.map((n) => [n.lng, n.lat] as [number, number]),
+        ...points.map((p) => [p.lng, p.lat] as [number, number]),
+      ];
       if (all.length > 1) {
         const bounds = all.reduce((b, c) => b.extend(c), new mapboxgl.LngLatBounds(all[0], all[0]));
         map.fitBounds(bounds, { padding: 60, duration: 600 });
@@ -103,9 +116,14 @@ export function TraceMap({ height = "420px", nodes, points, livePoint }: Props) 
 
   if (!token) {
     return (
-      <div style={{ height }} className="rounded-xl bg-surface-2 grid-bg flex items-center justify-center p-8">
+      <div
+        style={{ height }}
+        className="rounded-xl bg-surface-2 grid-bg flex items-center justify-center p-8"
+      >
         <div className="max-w-sm text-center space-y-4">
-          <div className="text-xs uppercase tracking-widest text-muted-foreground">Mapbox token required</div>
+          <div className="text-xs uppercase tracking-widest text-muted-foreground">
+            Mapbox token required
+          </div>
           <p className="text-sm text-muted-foreground">
             Paste your Mapbox public token to activate tracing.
           </p>
