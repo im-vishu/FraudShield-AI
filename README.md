@@ -1,30 +1,26 @@
-# FraudShield AI - India Fraud Watch Platform 🎮⚡
+# FraudShield AI - India Fraud Watch Platform
 
-FraudShield AI is a modern, high-performance **fraud monitoring** web app with a polished UI, persistent alert workflows, and rich report/transaction detail pages with **Mapbox trace visuals**.
+FraudShield AI is a modern **fraud monitoring** platform with a polished admin/analyst UI, persistent alert workflows, and rich report/transaction detail pages with **Mapbox trace visuals** and a demo **live trace** stream.
 
-🌐 **Live Demo:** (add your deployed URL)
+Live Demo: (add your deployed URL)
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
-### 🏠 Dashboard / Live Map
+Dashboard / Live Map
 
 <p align="center">
   <img src="frontend/src/assets/screenshots/dashboard.png" alt="FraudShield AI Dashboard" width="900" />
 </p>
 
-<br/>
-
-### 🧭 Transaction Details / Live Trace
+Transaction Details / Live Trace
 
 <p align="center">
   <img src="frontend/src/assets/screenshots/transaction-details.png" alt="Transaction Details" width="900" />
 </p>
 
-<br/>
-
-### 📄 Report Detail / KPI + Overlay
+Report Detail / KPI + Overlay
 
 <p align="center">
   <img src="frontend/src/assets/screenshots/report-details.png" alt="Report Details" width="900" />
@@ -32,27 +28,24 @@ FraudShield AI is a modern, high-performance **fraud monitoring** web app with a
 
 ---
 
-## ✨ Features
+## Features
 
-- 🔐 **JWT Authentication** with roles: `ADMIN`, `ANALYST`, `USER`
-- 🧾 **Transactions**
-  - List transactions with filtering/search
-  - Transaction detail page with Mapbox trace
-  - Demo “Live Trace” mode via SSE
-- 🚨 **Fraud Alerts (persistent)**
-  - Investigate / Dismiss / Resolve actions persist in Postgres
-  - Alert status workflow: `NEW` -> `INVESTIGATING` -> `RESOLVED` (or `DISMISSED`)
-- 📊 **Reports**
+- JWT authentication with roles: `ADMIN`, `ANALYST`, `USER`
+- Persistent fraud alert actions:
+  - Investigate / Dismiss / Resolve (stored in Postgres via Prisma)
+  - Status workflow: `NEW` -> `INVESTIGATING` -> `RESOLVED` (or `DISMISSED`)
+- Transactions:
+  - List + detail page
+  - Transaction trace rendered on Mapbox
+  - Demo "Live Trace" via SSE stream
+- Reports:
   - Reports list + report detail page
-  - KPI summary + trace summary + Mapbox overlay data
-- 🛰️ **Live transaction tracking**
-  - Backend SSE stream (`/api/transactions/stream`) animates trace movement on the dashboard map
-- 🧊 **3D Landing Hero**
-  - Three.js scene via `@react-three/fiber` + `drei`
+  - KPI summary + trace summary + Mapbox overlay
+- Landing page 3D hero (Three.js via `@react-three/fiber` + `drei`)
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 Backend:
 
@@ -72,7 +65,7 @@ Frontend:
 
 ---
 
-## 🗂️ Project Structure (high-level)
+## Project Structure (high-level)
 
 ```text
 .
@@ -83,16 +76,16 @@ Frontend:
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
-### Frontend (`frontend/.env`)
+Frontend (`frontend/.env`)
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 VITE_MAPBOX_TOKEN=pk.your_mapbox_public_token_here
 ```
 
-### Backend (`backend/.env`)
+Backend (`backend/.env`)
 
 Required:
 
@@ -111,32 +104,34 @@ ABUSEIPDB_API_KEY=
 IPINFO_TOKEN=
 ```
 
-✅ `.env` files should not be committed.
+Note: `.env` files should not be committed.
 
 ---
 
-## 🚀 Setup & Development
+## Setup & Development
 
-### ✅ Prerequisites
+Prerequisites:
 
 - Node.js (recommended: latest LTS)
 - Docker Desktop (recommended) for Postgres + Redis
 
-### 1) Start Postgres + Redis
+1) Start Postgres + Redis
 
 ```powershell
 cd C:\Projects\FraudShield-AI\backend
 docker compose up -d
 ```
 
-### 2) Apply Prisma migrations
+If you see an error like `failed to connect to the docker API` your Docker engine is not running. Start Docker Desktop and retry.
+
+2) Apply Prisma migrations
 
 ```powershell
 cd C:\Projects\FraudShield-AI\backend
 npx prisma migrate deploy
 ```
 
-### 3) Seed demo users (Admin + Analyst)
+3) Seed demo users (Admin + Analyst)
 
 ```powershell
 cd C:\Projects\FraudShield-AI\backend
@@ -144,24 +139,24 @@ npm install
 npm run seed:users
 ```
 
-Demo logins (default password `sentinel1234`):
+Demo logins (default password: `sentinel1234`):
 
 - `admin@sentinel.io` / `sentinel1234`
 - `analyst@sentinel.io` / `sentinel1234`
 
-### 4) Run backend
+4) Run backend
 
 ```powershell
 cd C:\Projects\FraudShield-AI\backend
 npm run dev
 ```
 
-Health:
+API:
 
 - `http://localhost:5000/api/health`
 - `http://localhost:5000/api`
 
-### 5) Run frontend
+5) Run frontend
 
 ```powershell
 cd C:\Projects\FraudShield-AI\frontend
@@ -169,35 +164,32 @@ npm install
 npm run dev -- --port 3000 --host
 ```
 
-Open:
-
-- `http://localhost:3000`
+Open: `http://localhost:3000`
 
 ---
 
-## 🐞 Troubleshooting
+## Troubleshooting
 
-### Mapbox says “token required”
+Mapbox says "token required":
 
 1. Confirm `frontend/.env` contains `VITE_MAPBOX_TOKEN=pk...`
-2. Restart the frontend dev server (Vite reads env at startup)
+2. Restart the frontend dev server (Vite loads env vars at startup)
 
-### Backend won’t start
+Backend returns "Route not found: /api":
 
-The backend waits for Postgres + Redis. Make sure Docker services are running:
+- Ensure the backend is running on port 5000
+- Open `http://localhost:5000/api` (root index route)
 
-```powershell
-cd backend
-docker compose up -d
-```
+Backend won't start:
+
+- You need Postgres running and reachable at `DATABASE_URL`
+- You need Redis running at `REDIS_URL` (for local dev, Redis now has an in-memory fallback, but Postgres is still required)
 
 ---
 
-## 📄 License
+## License
 
 MIT
 
----
-
-**FraudShield AI** © 2026 — Created by Vishant Chaudhary
+FraudShield AI © 2026 - Created by Vishant Chaudhary
 
