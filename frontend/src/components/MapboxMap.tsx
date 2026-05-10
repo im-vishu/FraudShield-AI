@@ -16,7 +16,7 @@ export function MapboxMap({
   cities,
   height = "500px",
   showLiveTransactions = true,
-  liveTraces
+  liveTraces,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -26,6 +26,16 @@ export function MapboxMap({
     return (import.meta.env.VITE_MAPBOX_TOKEN as string) || localStorage.getItem(TOKEN_KEY) || "";
   });
   const [draft, setDraft] = useState("");
+
+  // TanStack Start does SSR: the initial state may be computed on the server where
+  // `import.meta.env` isn't available. Re-hydrate the token on the client.
+  useEffect(() => {
+    if (token) return;
+    if (typeof window === "undefined") return;
+    const resolved =
+      (import.meta.env.VITE_MAPBOX_TOKEN as string) || localStorage.getItem(TOKEN_KEY) || "";
+    if (resolved) setToken(resolved);
+  }, [token]);
 
   useEffect(() => {
     if (!ref.current || !token) return;
@@ -42,9 +52,13 @@ export function MapboxMap({
     map.on("load", () => {
       cities.forEach((c) => {
         const color =
-          c.tier === 1 ? "#EF4444" :
-          c.tier === 2 ? "#FF6B35" :
-          c.tier === 3 ? "#F59E0B" : "#00D4AA";
+          c.tier === 1
+            ? "#EF4444"
+            : c.tier === 2
+              ? "#FF6B35"
+              : c.tier === 3
+                ? "#F59E0B"
+                : "#00D4AA";
         const size = 10 + c.tier * 2 + Math.min(c.riskPct, 30) / 2;
 
         const el = document.createElement("div");
@@ -59,11 +73,11 @@ export function MapboxMap({
           .setPopup(
             new mapboxgl.Popup({ offset: 18, closeButton: false }).setHTML(
               `<div style="font-family:Inter;color:#0B0F1E;padding:4px 6px">
-                 <div style="font-weight:700;font-size:13px">${c.name} · Tier ${c.tier}</div>
+                 <div style="font-weight:700;font-size:13px">${c.name} - Tier ${c.tier}</div>
                  <div style="font-size:11px;opacity:0.7">${c.txnCount.toLocaleString()} txns</div>
                  <div style="font-size:11px;color:${color};font-weight:600">${c.riskPct}% risk</div>
-               </div>`
-            )
+               </div>`,
+            ),
           )
           .addTo(map);
       });
@@ -144,8 +158,8 @@ export function MapboxMap({
             Mapbox token required
           </div>
           <p className="text-sm text-muted-foreground">
-            Paste your Mapbox public token to activate the live India fraud heatmap.
-            Get a free token at <span className="text-primary">mapbox.com</span>.
+            Paste your Mapbox public token to activate the live India fraud heatmap. Get a free
+            token at <span className="text-primary">mapbox.com</span>.
           </p>
           <input
             value={draft}
