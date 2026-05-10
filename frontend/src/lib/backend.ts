@@ -108,7 +108,10 @@ export function getTransactionTrace(token: string, id: string) {
   return apiFetch<{ trace: Trace }>(`/transactions/${id}/trace`, { token });
 }
 
-export function listTransactions(token: string, params?: Record<string, string | number | undefined>) {
+export function listTransactions(
+  token: string,
+  params?: Record<string, string | number | undefined>,
+) {
   const qs = params
     ? "?" +
       Object.entries(params)
@@ -116,7 +119,9 @@ export function listTransactions(token: string, params?: Record<string, string |
         .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
         .join("&")
     : "";
-  return apiFetch<{ transactions: Transaction[]; pagination: any }>(`/transactions${qs}`, { token });
+  return apiFetch<{ transactions: Transaction[]; pagination: any }>(`/transactions${qs}`, {
+    token,
+  });
 }
 
 export function listReports(token: string, params?: Record<string, string | number | undefined>) {
