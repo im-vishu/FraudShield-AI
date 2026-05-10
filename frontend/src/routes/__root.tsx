@@ -73,11 +73,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FraudShieldAI — India's UPI Fraud Sentinel" },
-      { name: "description", content: "Real-time UPI/Paytm/GPay fraud monitoring across 300+ Indian cities. Tier 1-4 heatmaps, live transaction tracking, instant blocking." },
+      { title: "FraudShieldAI - India's UPI Fraud Sentinel" },
+      {
+        name: "description",
+        content:
+          "Real-time UPI/Paytm/GPay fraud monitoring across 300+ Indian cities. Tier 1-4 heatmaps, live transaction tracking, instant blocking.",
+      },
       { name: "author", content: "FraudShieldAI" },
-      { property: "og:title", content: "FraudShieldAI — India's UPI Fraud Sentinel" },
-      { property: "og:description", content: "Tier 1-4 city heatmaps, live UPI transaction tracking, instant fraud blocking for Indian fintechs." },
+      { property: "og:title", content: "FraudShieldAI - India's UPI Fraud Sentinel" },
+      {
+        property: "og:description",
+        content:
+          "Tier 1-4 city heatmaps, live UPI transaction tracking, instant fraud blocking for Indian fintechs.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@FraudShieldAI" },
