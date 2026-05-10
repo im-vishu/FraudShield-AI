@@ -9,9 +9,11 @@ export type ApiError = {
 
 export async function apiFetch<T>(
   path: string,
-  opts: RequestInit & { token?: string | null } = {}
+  opts: RequestInit & { token?: string | null } = {},
 ): Promise<T> {
-  const url = path.startsWith("http") ? path : `${API_URL}${path.startsWith("/") ? "" : "/"}${path}`;
+  const url = path.startsWith("http")
+    ? path
+    : `${API_URL}${path.startsWith("/") ? "" : "/"}${path}`;
 
   const headers = new Headers(opts.headers || {});
   headers.set("Accept", "application/json");
@@ -37,4 +39,3 @@ export async function apiFetch<T>(
   }
   return body as T;
 }
-
