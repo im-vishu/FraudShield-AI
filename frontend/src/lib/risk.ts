@@ -13,19 +13,27 @@ export function bandFor(score: number): RiskBand {
 
 export function bandColor(b: RiskBand): string {
   switch (b) {
-    case "critical": return "text-error";
-    case "high":     return "text-orange-600";
-    case "medium":   return "text-amber-600";
-    default:         return "text-emerald-600";
+    case "critical":
+      return "text-error";
+    case "high":
+      return "text-orange-600";
+    case "medium":
+      return "text-amber-600";
+    default:
+      return "text-emerald-600";
   }
 }
 
 export function bandBg(b: RiskBand): string {
   switch (b) {
-    case "critical": return "bg-error";
-    case "high":     return "bg-orange-500";
-    case "medium":   return "bg-amber-400";
-    default:         return "bg-emerald-500";
+    case "critical":
+      return "bg-error";
+    case "high":
+      return "bg-orange-500";
+    case "medium":
+      return "bg-amber-400";
+    default:
+      return "bg-emerald-500";
   }
 }
 
@@ -37,20 +45,27 @@ export function scoreCity(c: City, velocity = 1): number {
   return Math.min(100, Math.round(base * tierMult * velocity));
 }
 
-const KINDS: Alert["kind"][] = ["VELOCITY SPIKE", "GEO-ANOMALY", "BOT PATTERN", "TIER SPIKE", "UPI ABUSE"];
+const KINDS: Alert["kind"][] = [
+  "VELOCITY SPIKE",
+  "GEO-ANOMALY",
+  "BOT PATTERN",
+  "TIER SPIKE",
+  "UPI ABUSE",
+];
 
 function genAlert(seed: number): Alert {
   const c = CITIES[seed % CITIES.length];
-  const score = scoreCity(c, 0.9 + ((seed % 5) * 0.08));
+  const score = scoreCity(c, 0.9 + (seed % 5) * 0.08);
   const band = bandFor(score);
-  const sev: Alert["severity"] = band === "critical" ? "critical" : band === "high" ? "high" : "medium";
+  const sev: Alert["severity"] =
+    band === "critical" ? "critical" : band === "high" ? "high" : "medium";
   const kind = KINDS[seed % KINDS.length];
   return {
     id: `LA-${Date.now()}-${seed}`,
     kind,
     ts: "Just now",
     title: `${kind} in ${c.name}`,
-    body: `Tier ${c.tier} cluster — risk ${score}% across ${c.txnCount.toLocaleString("en-IN")} txns.`,
+    body: `Tier ${c.tier} cluster - risk ${score}% across ${c.txnCount.toLocaleString("en-IN")} txns.`,
     severity: sev,
     city: c.name,
   };
