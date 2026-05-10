@@ -7,7 +7,7 @@ function NodeGraph({ count = 36 }: { count?: number }) {
   const group = useRef<THREE.Group>(null);
   const points = useMemo(() => {
     const pts: THREE.Vector3[] = [];
-    const rand = (n: number) => (Math.sin(n * 999.1) * 0.5 + 0.5);
+    const rand = (n: number) => Math.sin(n * 999.1) * 0.5 + 0.5;
     for (let i = 0; i < count; i++) {
       const x = (rand(i + 1) - 0.5) * 3.2;
       const y = (rand(i + 2) - 0.5) * 2.0;
@@ -83,7 +83,9 @@ export function LandingHeroScene({ reducedMotion }: { reducedMotion?: boolean })
             </span>
           </div>
           <div>
-            <div className="text-xs font-label text-on-surface-variant uppercase tracking-widest">Processing Speed</div>
+            <div className="text-xs font-label text-on-surface-variant uppercase tracking-widest">
+              Processing Speed
+            </div>
             <div className="text-2xl font-headline font-bold text-primary">0.04ms</div>
           </div>
         </div>
@@ -91,4 +93,3 @@ export function LandingHeroScene({ reducedMotion }: { reducedMotion?: boolean })
     </div>
   );
 }
-
