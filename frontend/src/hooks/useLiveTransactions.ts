@@ -59,7 +59,9 @@ export function useLiveTransactions(enabled = true) {
             if (currentEvent === "txn_trace") {
               setItems((prev) => [parsed, ...prev].slice(0, 12));
             }
-          } catch {}
+          } catch {
+            // Ignore malformed SSE data frames.
+          }
         }
       };
 
@@ -70,7 +72,9 @@ export function useLiveTransactions(enabled = true) {
       }
     };
 
-    run().catch(() => {});
+    run().catch(() => {
+      // Network errors are expected when navigating away or when the backend restarts.
+    });
     return () => {
       cancelled = true;
       ac.abort();
@@ -79,4 +83,3 @@ export function useLiveTransactions(enabled = true) {
 
   return useMemo(() => items, [items]);
 }
-
