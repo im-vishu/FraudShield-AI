@@ -53,7 +53,9 @@ export function LiveAlertsList({ limit = 8 }: { limit?: number }) {
   if (!token || !user || (user.role !== "ADMIN" && user.role !== "ANALYST")) {
     return (
       <div className="bg-surface-container-low rounded-xl border border-outline-variant/20 py-10 text-center">
-        <p className="text-on-surface-variant text-sm">Alerts are available to analysts and admins.</p>
+        <p className="text-on-surface-variant text-sm">
+          Alerts are available to analysts and admins.
+        </p>
       </div>
     );
   }
@@ -61,7 +63,7 @@ export function LiveAlertsList({ limit = 8 }: { limit?: number }) {
   if (recent.isLoading) {
     return (
       <div className="bg-surface-container-low rounded-xl border border-outline-variant/20 py-10 text-center text-sm text-on-surface-variant">
-        Loading live alertsâ€¦
+        Loading live alerts...
       </div>
     );
   }
@@ -71,7 +73,9 @@ export function LiveAlertsList({ limit = 8 }: { limit?: number }) {
       <div className="bg-surface-container-low rounded-xl border-2 border-dashed border-outline-variant/30 py-16 text-center">
         <span className="material-symbols-outlined text-4xl text-emerald-500 mb-2">verified</span>
         <p className="font-headline font-bold text-lg">All clear</p>
-        <p className="text-on-surface-variant text-sm">No active alerts. Live stream will surface anomalies as they appear.</p>
+        <p className="text-on-surface-variant text-sm">
+          No active alerts. Live stream will surface anomalies as they appear.
+        </p>
       </div>
     );
   }
@@ -86,13 +90,22 @@ export function LiveAlertsList({ limit = 8 }: { limit?: number }) {
           <article
             key={a.alertId}
             className={`bg-surface-container-lowest p-6 rounded-xl border-l-4 shadow-sm hover:shadow-md transition-all group relative animate-fade-in ${
-              a.severity === "CRITICAL" ? "border-error" : a.severity === "HIGH" ? "border-orange-500" : "border-amber-400"
+              a.severity === "CRITICAL"
+                ? "border-error"
+                : a.severity === "HIGH"
+                  ? "border-orange-500"
+                  : "border-amber-400"
             }`}
           >
             <div className="flex gap-6">
               <div className="relative">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white ${bandBg(band)}`}>
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center text-white ${bandBg(band)}`}
+                >
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
                     {ICONS[a.severity] || "warning"}
                   </span>
                 </div>
@@ -105,16 +118,26 @@ export function LiveAlertsList({ limit = 8 }: { limit?: number }) {
                   <div>
                     <div className="flex items-center gap-3 mb-1 flex-wrap">
                       <h3 className="font-headline font-bold text-lg">{a.title}</h3>
-                      <span className={`px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider ${
-                        a.severity === "CRITICAL" ? "bg-error-container text-on-error-container"
-                        : a.severity === "HIGH"   ? "bg-orange-100 text-orange-700"
-                                                  : "bg-amber-100 text-amber-800"
-                      }`}>{String(a.severity).toLowerCase()}</span>
+                      <span
+                        className={`px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider ${
+                          a.severity === "CRITICAL"
+                            ? "bg-error-container text-on-error-container"
+                            : a.severity === "HIGH"
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-amber-100 text-amber-800"
+                        }`}
+                      >
+                        {String(a.severity).toLowerCase()}
+                      </span>
                       {status === "INVESTIGATING" && (
-                        <span className="px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider bg-blue-100 text-blue-700">Investigating</span>
+                        <span className="px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider bg-blue-100 text-blue-700">
+                          Investigating
+                        </span>
                       )}
                     </div>
-                    <p className="text-on-surface-variant text-sm leading-relaxed max-w-xl">{a.message}</p>
+                    <p className="text-on-surface-variant text-sm leading-relaxed max-w-xl">
+                      {a.message}
+                    </p>
                   </div>
                   <span className="text-xs text-outline font-medium whitespace-nowrap">
                     {new Date(a.createdAt).toLocaleTimeString()}
@@ -123,7 +146,9 @@ export function LiveAlertsList({ limit = 8 }: { limit?: number }) {
                 <div className="mt-4 flex items-center justify-between pt-4 border-t border-slate-100/50">
                   <div className="flex items-center gap-6">
                     <div className="flex flex-col">
-                      <span className="text-[10px] text-outline uppercase font-bold tracking-tighter">Transaction</span>
+                      <span className="text-[10px] text-outline uppercase font-bold tracking-tighter">
+                        Transaction
+                      </span>
                       <span className="text-sm font-bold">{a.transactionRef}</span>
                     </div>
                   </div>
@@ -168,10 +193,17 @@ export function LiveAlertsTicker({ limit = 5 }: { limit?: number }) {
     refetchInterval: 5000,
   });
   const alerts = (recent.data || []).slice(0, limit);
-  if (!token || !user || (user.role !== "ADMIN" && user.role !== "ANALYST") || alerts.length === 0) {
+  if (
+    !token ||
+    !user ||
+    (user.role !== "ADMIN" && user.role !== "ANALYST") ||
+    alerts.length === 0
+  ) {
     return (
       <div className="py-8 text-center text-xs text-on-surface-variant">
-        <span className="material-symbols-outlined text-2xl text-emerald-500 mb-1">check_circle</span>
+        <span className="material-symbols-outlined text-2xl text-emerald-500 mb-1">
+          check_circle
+        </span>
         <p>No live alerts. Stream is healthy.</p>
       </div>
     );
@@ -179,9 +211,17 @@ export function LiveAlertsTicker({ limit = 5 }: { limit?: number }) {
   return (
     <div className="space-y-2">
       {alerts.map((a) => {
-        const dot = a.severity === "CRITICAL" ? "bg-error" : a.severity === "HIGH" ? "bg-orange-500" : "bg-amber-400";
+        const dot =
+          a.severity === "CRITICAL"
+            ? "bg-error"
+            : a.severity === "HIGH"
+              ? "bg-orange-500"
+              : "bg-amber-400";
         return (
-          <div key={a.alertId} className="flex items-center gap-3 p-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high transition-colors animate-fade-in">
+          <div
+            key={a.alertId}
+            className="flex items-center gap-3 p-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high transition-colors animate-fade-in"
+          >
             <span className={`w-2 h-2 rounded-full ${dot} animate-pulse`} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{a.title}</p>
