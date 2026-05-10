@@ -1,7 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth";
 
-type NavKey = "overview" | "transactions" | "alerts" | "reports" | "risk" | "admin";
+type NavKey =
+  | "overview"
+  | "analyze"
+  | "transactions"
+  | "alerts"
+  | "reports"
+  | "ip"
+  | "logs"
+  | "risk"
+  | "admin";
 
 export function DashboardLayout({
   active,
@@ -18,9 +28,84 @@ export function DashboardLayout({
 }) {
   const { user, logout } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const canSeeAlerts = user?.role === "ADMIN" || user?.role === "ANALYST";
   const canSeeAdmin = user?.role === "ADMIN";
+
+  useEffect(() => {
+    // Close sidebar after navigation on mobile.
+    setSidebarOpen(false);
+  }, [path]);
+
+  const navItems = useMemo(
+    () => [
+      {
+        k: "overview" as const,
+        to: "/dashboard",
+        label: "Overview",
+        icon: "dashboard",
+        hidden: false,
+      },
+      {
+        k: "analyze" as const,
+        to: "/dashboard/analyze",
+        label: "Analyze",
+        icon: "science",
+        hidden: false,
+      },
+      {
+        k: "transactions" as const,
+        to: "/dashboard/transactions",
+        label: "Transactions",
+        icon: "payments",
+        hidden: false,
+      },
+      {
+        k: "alerts" as const,
+        to: "/dashboard/alerts",
+        label: "Alerts",
+        icon: "notifications_active",
+        hidden: !canSeeAlerts,
+      },
+      {
+        k: "reports" as const,
+        to: "/dashboard/reports",
+        label: "Reports",
+        icon: "summarize",
+        hidden: false,
+      },
+      {
+        k: "ip" as const,
+        to: "/dashboard/ip-reputation",
+        label: "IP Reputation",
+        icon: "public",
+        hidden: false,
+      },
+      {
+        k: "logs" as const,
+        to: "/dashboard/logs",
+        label: "Logs",
+        icon: "receipt_long",
+        hidden: false,
+      },
+      {
+        k: "risk" as const,
+        to: "/dashboard/risk-analysis",
+        label: "Risk",
+        icon: "security",
+        hidden: !canSeeAlerts,
+      },
+      {
+        k: "admin" as const,
+        to: "/dashboard/admin",
+        label: "Admin",
+        icon: "settings_applications",
+        hidden: !canSeeAdmin,
+      },
+    ],
+    [canSeeAlerts, canSeeAdmin],
+  );
 
   const Item = ({
     k,
@@ -41,49 +126,97 @@ export function DashboardLayout({
       <Link
         to={to}
         className={[
-          "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 scale-100 active:scale-95 transition-transform",
+          "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors duration-200 active:scale-[0.99] transition-transform",
           isActive
-            ? "bg-slate-200/50 dark:bg-slate-800 text-slate-900 dark:text-white font-semibold"
-            : "text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800/80",
+            ? "bg-slate-900 text-white shadow-sm"
+            : "text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-800/70",
         ].join(" ")}
       >
-        <span className="material-symbols-outlined">{icon}</span>
+        <span className="material-symbols-outlined text-[20px]">{icon}</span>
         <span>{label}</span>
       </Link>
     );
   };
 
   return (
-    <div className="font-body text-on-surface bg-surface min-h-screen">
-      <aside className="flex flex-col fixed left-0 top-0 z-40 bg-slate-50 dark:bg-slate-900 h-screen w-64 border-r-0 font-manrope text-sm font-medium tracking-tight">
+    <div className="font-body text-on-surface min-h-screen bg-gradient-to-b from-surface to-surface-container-low">
+      {/* Mobile top bar */}
+      <div className="lg:hidden sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/20">
+        <div className="h-14 px-4 flex items-center justify-between">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="h-9 w-9 rounded-lg hover:bg-slate-100 flex items-center justify-center"
+            aria-label="Open menu"
+          >
+            <span className="material-symbols-outlined">menu</span>
+          </button>
+          <div className="min-w-0 text-center">
+            <p className="text-sm font-bold truncate">{title || "Dashboard"}</p>
+            {subtitle ? (
+              <p className="text-[10px] text-on-surface-variant truncate">{subtitle}</p>
+            ) : null}
+          </div>
+          <div className="h-9 w-9 rounded-lg bg-surface-container-low flex items-center justify-center">
+            <span className="material-symbols-outlined text-[18px] text-slate-600">shield</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Backdrop */}
+      {sidebarOpen ? (
+        <button
+          className="lg:hidden fixed inset-0 z-40 bg-black/40"
+          onClick={() => setSidebarOpen(false)}
+          aria-label="Close menu"
+        />
+      ) : null}
+
+      {/* Sidebar */}
+      <aside
+        className={[
+          "fixed left-0 top-0 z-50 h-screen w-[280px] border-r border-slate-200/30 bg-white/90 backdrop-blur-xl",
+          "transition-transform duration-200",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0 lg:z-40 lg:w-72 lg:bg-white/70",
+        ].join(" ")}
+      >
         <div className="p-6">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-signature-gradient rounded-xl flex items-center justify-center text-white shadow-lg">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+          <div className="flex items-center gap-3 mb-7">
+            <div className="w-11 h-11 signature-gradient rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/10">
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
                 shield_lock
               </span>
             </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tighter text-slate-900 dark:text-white leading-tight">
-                Sovereign Sentinel
+            <div className="min-w-0">
+              <h1 className="text-lg font-extrabold tracking-tight text-slate-900 leading-tight truncate">
+                FraudShield AI
               </h1>
-              <p className="text-[10px] uppercase tracking-widest text-on-primary-container">
-                Fraud Prevention AI
+              <p className="text-[10px] uppercase tracking-widest text-on-surface-variant truncate">
+                India Fraud Watch
               </p>
             </div>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden ml-auto h-9 w-9 rounded-lg hover:bg-slate-100 flex items-center justify-center"
+              aria-label="Close menu"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
           </div>
+
           <nav className="space-y-1">
-            <Item k="overview" to="/dashboard" label="Overview" icon="dashboard" />
-            <Item k="transactions" to="/dashboard/transactions" label="Transactions" icon="payments" />
-            <Item k="alerts" to="/dashboard/alerts" label="Alerts" icon="notifications_active" hidden={!canSeeAlerts} />
-            <Item k="reports" to="/dashboard/reports" label="Reports" icon="summarize" />
-            <Item k="risk" to="/dashboard/risk-analysis" label="Risk" icon="security" hidden={!canSeeAlerts} />
-            <Item k="admin" to="/dashboard/admin" label="Admin" icon="settings_applications" hidden={!canSeeAdmin} />
+            {navItems.map((it) => (
+              <Item key={it.k} {...it} />
+            ))}
           </nav>
         </div>
+
         <div className="mt-auto p-6 space-y-3">
-          <div className="p-4 bg-surface-container-high rounded-xl">
-            <p className="text-xs text-on-surface-variant mb-1">Signed in</p>
+          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/15">
+            <p className="text-[11px] text-on-surface-variant mb-1">Signed in</p>
             <p className="text-sm font-bold truncate">{user?.name || user?.email}</p>
             <p className="text-[10px] uppercase tracking-widest text-on-surface-variant mt-1">
               {user?.role || "USER"}
@@ -91,7 +224,7 @@ export function DashboardLayout({
           </div>
           <button
             onClick={logout}
-            className="w-full px-4 py-2 text-xs font-bold text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2.5 text-xs font-bold text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-colors flex items-center justify-center gap-2 border border-outline-variant/15"
           >
             <span className="material-symbols-outlined text-base">logout</span>
             Sign out
@@ -99,16 +232,24 @@ export function DashboardLayout({
         </div>
       </aside>
 
-      <header className="flex items-center justify-between px-8 ml-64 h-16 sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none font-manrope text-sm border-b border-slate-200/15 dark:border-slate-800/15">
+      {/* Desktop top bar */}
+      <header className="hidden lg:flex items-center justify-between px-8 ml-72 h-16 sticky top-0 z-40 bg-white/60 backdrop-blur-xl border-b border-slate-200/20">
         <div className="min-w-0">
-          {title ? <h2 className="font-bold text-slate-900 dark:text-white truncate">{title}</h2> : null}
-          {subtitle ? <p className="text-[11px] text-on-surface-variant truncate">{subtitle}</p> : null}
+          {title ? (
+            <h2 className="text-sm font-extrabold tracking-tight text-slate-900 truncate">
+              {title}
+            </h2>
+          ) : null}
+          {subtitle ? (
+            <p className="text-[11px] text-on-surface-variant truncate">{subtitle}</p>
+          ) : null}
         </div>
-        <div className="flex items-center gap-3">{actions}</div>
+        <div className="flex items-center gap-2">{actions}</div>
       </header>
 
-      <main className="ml-64 px-8 py-8">{children}</main>
+      <main className="lg:ml-72 px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div className="max-w-7xl mx-auto">{children}</div>
+      </main>
     </div>
   );
 }
-
